@@ -6,6 +6,7 @@ plugins {
     application
     kotlin("jvm") version "1.7.10"
     id("io.ktor.plugin") version "2.1.1"
+    kotlin("plugin.serialization") version "1.4.21"
 }
 
 group = "com.example"
@@ -33,5 +34,10 @@ dependencies {
     implementation("org.ktorm:ktorm-core:3.4.1")
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation("mysql:mysql-connector-java:8.0.25")
+
+    //serialization
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    //server-content-negotiation for using json
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
 
 }
