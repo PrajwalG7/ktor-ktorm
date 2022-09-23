@@ -11,4 +11,9 @@ data class UserCredentials(
     fun hashedPassword():String{
         return BCrypt.hashpw(password, BCrypt.gensalt())
     }
+
+    //validatingCredentials
+    fun isValidCredentials():Boolean{
+        return username.length>=3&& password.length>=6
+    }
 }
