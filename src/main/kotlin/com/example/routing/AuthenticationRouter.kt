@@ -16,7 +16,7 @@ fun Application.authenticationRoutes(){
         post("/register"){
             val userCredentials= call.receive<UserCredentials>()
             val username= userCredentials.username.lowercase()
-            val password= userCredentials.password
+            val password= userCredentials.hashedPassword()
 
             db.insert(UserEntity){
                 set(it.username,username)
