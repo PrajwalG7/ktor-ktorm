@@ -40,4 +40,7 @@ dependencies {
     //server-content-negotiation for using json
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
 
+    //OpenBSD-style Blowfish password hashing for Java
+    implementation("org.mindrot:jbcrypt:0.4")
+
 }
