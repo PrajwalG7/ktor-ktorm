@@ -5,8 +5,13 @@ import com.example.db.entities.UserEntity
 import com.example.models.NoteResponse
 import com.example.models.User
 import com.example.models.UserCredentials
+import com.example.utils.TokenManager
+import com.typesafe.config.ConfigFactory
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,6 +21,8 @@ import org.mindrot.jbcrypt.BCrypt
 fun Application.authenticationRoutes(){
 
     val db= DatabaseConnection.database
+    val tokenManager= TokenManager(HoconApplicationConfig(ConfigFactory.load()))
+
     routing {
         post("/register"){
             val userCredentials= call.receive<UserCredentials>()
@@ -97,6 +104,7 @@ fun Application.authenticationRoutes(){
                         success = false,
                         data = "Invalid username or password."
                     ))
+                return@post
             }
             val doesPasswordMatch= BCrypt.checkpw(password,user?.password)
             if(!doesPasswordMatch){
@@ -105,12 +113,25 @@ fun Application.authenticationRoutes(){
                         success = false,
                         data = "Invalid username or password."
                     ))
+                return@post
             }
-            call.respond(HttpStatusCode.BadRequest,
+            val token= tokenManager.generateJWTToken(user)
+            call.respond(HttpStatusCode.OK,
                 NoteResponse(
                     success = true,
-                    data = "User successfully logged in."
+                    data = token
                 ))
+
+        }
+
+        //protected endpoint
+        authenticate {
+            get("/protectedEndpoint"){
+                val principle=call.principal<JWTPrincipal>()
+                val username = principle!!.payload.getClaim("username").asString()
+                val userId= principle.payload.getClaim("userId").asInt()
+                call.respondText("Hello $username with id $userId")
+            }
         }
     }
 }
