@@ -53,7 +53,7 @@ Note: username should be greater than 3 chars and password should be greater tha
 
 Note: when user will log in, the JWT token will be sent back to user as a response.
 
-### Verifying and protecting the endpoint (protectedEndpoint)
+### Verifying JWT and protecting the endpoint (protectedEndpoint)
 
 *    get("/protectedEndpoint")
 
